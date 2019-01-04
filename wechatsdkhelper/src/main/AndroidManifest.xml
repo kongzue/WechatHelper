@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kongzue.wechatsdkhelper" >
+
+    <application>
+        <activity android:name=".activities.BaseWXEntryActivity" />
+        <activity android:name=".activities.BaseWXPayEntryActivity" />
+    </application>
+</manifest>
