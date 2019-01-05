@@ -73,6 +73,7 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                     finish();
                 } else {
                     //toast("登录错误");
+                    WeChatLoginUtil.getOnWXLoginListener().onCancel();
                     finish();
                 }
                 break;
