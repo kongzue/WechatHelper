@@ -1,7 +1,7 @@
 <resources>
 
     <style name="ActivityEmpty" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>

@@ -1,5 +1,6 @@
 package com.kongzue.wechatsdkhelper.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 
 import com.kongzue.baseokhttp.HttpRequest;
 import com.kongzue.baseokhttp.listener.ResponseListener;
+import com.kongzue.wechatsdkhelper.R;
 import com.kongzue.wechatsdkhelper.WeChatLoginUtil;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
@@ -28,12 +30,14 @@ import static com.kongzue.wechatsdkhelper.WeChatLoginUtil.ERROR_LOGIN_GET_USERIN
 
 public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEventHandler {
     
+    private BaseWXEntryActivity me;
     private IWXAPI api;
     
     @Override
     @Deprecated
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        me = this;
         api = WXAPIFactory.createWXAPI(this, APP_ID);
         api.registerApp(APP_SECRET);
         try {
@@ -173,8 +177,9 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                                 map.put("unionid", unionid);
                                 map.put("province", province);
                                 map.put("city", city);
-    
+                                
                                 WeChatLoginUtil.getOnWXLoginListener().onSuccess(map);
+                                finish();
                             } catch (Exception e) {
                                 if (DEBUGMODE) e.printStackTrace();
                                 WeChatLoginUtil.getOnWXLoginListener().onError(ERROR_LOGIN_GET_USERINFO);
@@ -222,5 +227,14 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
     
     private void loge(String s) {
         if (DEBUGMODE) Log.e(">>>", s);
+    }
+    
+    @Override
+    public void finish() {
+        super.finish();
+        int version = Integer.valueOf(android.os.Build.VERSION.SDK);
+        if (version > 5) {
+            overridePendingTransition(R.anim.hold, R.anim.back);
+        }
     }
 }

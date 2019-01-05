@@ -1,5 +1,8 @@
 package com.kongzue.wechatsdkhelper.interfaces;
 
+import android.app.Activity;
+import android.content.Context;
+
 import java.util.Map;
 
 /**
@@ -11,7 +14,7 @@ import java.util.Map;
  */
 public interface OnWXLoginListener {
     
-    void onSuccess(Map<String,String> result);
+    void onSuccess(Map<String, String> result);
     
     void onCancel();
     
