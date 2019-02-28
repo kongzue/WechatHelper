@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import com.kongzue.wechatsdkhelper.interfaces.OnWXShareListener;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
@@ -27,6 +28,7 @@ import static com.kongzue.wechatsdkhelper.WeChatHelper.*;
  */
 public class WeChatShareUtil {
     
+    private static OnWXShareListener onWXShareListener;
     public static final int THUMB_SIZE = 150;
     
     //分享链接到微信用户
@@ -174,7 +176,7 @@ public class WeChatShareUtil {
             if (needRecycle)
                 bmp.recycle();
             ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
-            localBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
+            localBitmap.compress(Bitmap.CompressFormat.JPEG, 70,
                                  localByteArrayOutputStream
             );
             localBitmap.recycle();
@@ -190,7 +192,7 @@ public class WeChatShareUtil {
         }
     }
     
-    public class Link {
+    public static class Link {
         
         private String title;
         private String url;
@@ -233,5 +235,18 @@ public class WeChatShareUtil {
         public void setImage(Bitmap image) {
             this.image = image;
         }
+    }
+    
+    public static OnWXShareListener getOnWXShareListener() {
+        return onWXShareListener == null ? new OnWXShareListener() {
+            @Override
+            public void onShare(boolean success) {
+            
+            }
+        } : onWXShareListener;
+    }
+    
+    public static void setOnWXShareListener(OnWXShareListener onWXShareListener) {
+        WeChatShareUtil.onWXShareListener = onWXShareListener;
     }
 }

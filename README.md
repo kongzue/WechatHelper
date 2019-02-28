@@ -15,15 +15,14 @@ Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享
 </a>
 
 
-### ⚠提示
-- ⚠本组件尚处于内测阶段，如果敢于尝试可以现在开始使用，否则请等待正式版发布。
+### 提示
 - 本组件是微信 SDK 辅助组件，因此需要额外引入微信 SDK 库：
 ```
 implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 ```
 - 本组件支付模块需要使用网络请求框架与微信接口进行数据交互，因此需要引入 BaseOkHttpV3 组件库，请保证使用 3.0.5 以上版本：
 ```
-implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.0.5'
+implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.0.8'
 ```
 
 ### 引入
@@ -34,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.0.0.4</version>
+  <version>1.1.0</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.0.0.4'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.0'
 ```
 
 ## 开始使用
@@ -175,6 +174,6 @@ limitations under the License.
 ```
 
 ## 更新日志
-
-本组件尚处于内测阶段。
+v1.1.0:
+- 正式发布；
 

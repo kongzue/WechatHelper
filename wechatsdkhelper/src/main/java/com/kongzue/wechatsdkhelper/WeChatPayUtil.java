@@ -161,7 +161,6 @@ public class WeChatPayUtil {
             parameters.put("package", "Sign=WXPay");
             
             PayReq req = new PayReq();
-            //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
             req.appId = APP_ID;
             req.partnerId = MCH_ID;
             req.prepayId = prepay_id;
@@ -453,5 +452,17 @@ public class WeChatPayUtil {
     
     public static String getOrderNo() {
         return weChatPayUtil.orderNo;
+    }
+    
+    public static void setStoreKey(String storeKey) {
+        STORE_KEY = storeKey;
+    }
+    
+    public static void setMchId(String mchId) {
+        MCH_ID = mchId;
+    }
+    
+    public static void setNotifyUrl(String notifyUrl) {
+        NOTIFY_URL = notifyUrl;
     }
 }

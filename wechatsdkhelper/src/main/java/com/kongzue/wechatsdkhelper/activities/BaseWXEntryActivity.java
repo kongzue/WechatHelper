@@ -11,6 +11,7 @@ import com.kongzue.baseokhttp.HttpRequest;
 import com.kongzue.baseokhttp.listener.ResponseListener;
 import com.kongzue.wechatsdkhelper.R;
 import com.kongzue.wechatsdkhelper.WeChatLoginUtil;
+import com.kongzue.wechatsdkhelper.WeChatShareUtil;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -69,8 +70,8 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 if (2 == resp.getType()) {
-                    //toast("分享失败");
                     finish();
+                    WeChatShareUtil.getOnWXShareListener().onShare(false);
                 } else {
                     //toast("登录错误");
                     WeChatLoginUtil.getOnWXLoginListener().onCancel();
@@ -86,8 +87,8 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                         doLoginByWechat(code);
                         break;
                     case 2:
-                        //toast("分享成功");
                         finish();
+                        WeChatShareUtil.getOnWXShareListener().onShare(true);
                         break;
                 }
                 break;
