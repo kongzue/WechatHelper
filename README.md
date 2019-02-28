@@ -67,6 +67,8 @@ WeChatHelper.DEBUGMODE = true;
 
 ![add theme](https://github.com/kongzue/Res/raw/master/app/src/main/res/mipmap-xxxhdpi/wechathelper_add_theme.png)
 
+可前往<a href="https://github.com/kongzue/WechatHelper/blob/master/app/src/main/AndroidManifest.xml" target="_blank">直接复制</a>
+
 ### 使用微信登录
 
 使用以下代码创建登录：
