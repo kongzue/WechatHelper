@@ -84,7 +84,11 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                         //拿到了微信返回的code,立马再去请求access_token
                         String code = ((SendAuth.Resp) resp).code;
                         log("code=" + code);
-                        doLoginByWechat(code);
+                        if (WeChatLoginUtil.getOnWXLoginListener().returnCode(code)) {
+                            finish();
+                        }else{
+                            doLoginByWechat(code);
+                        }
                         break;
                     case 2:
                         finish();

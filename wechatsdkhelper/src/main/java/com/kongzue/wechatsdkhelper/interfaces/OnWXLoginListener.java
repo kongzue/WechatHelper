@@ -20,4 +20,6 @@ public interface OnWXLoginListener {
     
     void onError(int errorStatus);
     
+    boolean returnCode(String code);
+    
 }

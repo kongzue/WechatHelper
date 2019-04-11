@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
                 //WeChatLoginUtil.ERROR_LOGIN_GET_USERINFO = -8;    //无法获取用户信息
                 //WeChatHelper.ERROR_NOT_INSTALL_WECHAT = -1;       //未安装微信
             }
+    
+            @Override
+            public boolean returnCode(String code) {
+                return false;
+            }
         });
     
         //WeChatPayUtil.initPay(MCH_ID,NOTIFY_URL);

@@ -1,11 +1,11 @@
 # Kongzue WechatHelper
 Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享三个模块。
 
-<a href="https://github.com/kongzue/StackLabel/">
-<img src="https://img.shields.io/badge/StackLabel-1.0.0.4-green.svg" alt="Kongzue StackLabel">
+<a href="https://github.com/kongzue/WechatHelper/">
+<img src="https://img.shields.io/badge/WechatHelper-1.1.1-green.svg" alt="Kongzue WechatHelper">
 </a>
-<a href="https://bintray.com/myzchh/maven/StackLabel/1.0.0.4/link">
-<img src="https://img.shields.io/badge/Maven-1.0.0.4-blue.svg" alt="Maven">
+<a href="https://bintray.com/myzchh/maven/WechatHelper/1.0.1/link">
+<img src="https://img.shields.io/badge/Maven-1.1.1-blue.svg" alt="Maven">
 </a>
 <a href="http://www.apache.org/licenses/LICENSE-2.0">
 <img src="https://img.shields.io/badge/License-Apache%202.0-red.svg" alt="License">
@@ -33,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.0'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.1'
 ```
 
 ## 开始使用
@@ -95,6 +95,11 @@ WeChatLoginUtil.doLogin(this, new OnWXLoginListener() {
         //WeChatLoginUtil.ERROR_LOGIN = -7;                 //登录错误
         //WeChatLoginUtil.ERROR_LOGIN_GET_USERINFO = -8;    //无法获取用户信息
         //WeChatHelper.ERROR_NOT_INSTALL_WECHAT = -1;       //未安装微信
+    }
+    
+    @Override
+    public boolean returnCode(String code) {
+        return false;                                       //如果 return true，则自行处理登录code，不再由WeChatHelper负责接下来的获取用户信息的事务
     }
 });
 ```
@@ -176,6 +181,9 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.1:
+- OnWXLoginListener 新增 returnCode(String code) 回调，方便自行处理 code 的情况。
+
 v1.1.0:
 - 正式发布；
 
