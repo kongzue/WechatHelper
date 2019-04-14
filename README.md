@@ -111,6 +111,11 @@ WeChatLoginUtil.doLogin(this, new OnWXLoginListener() {
 WeChatPayUtil.initPay(MCH_ID,NOTIFY_URL);
 ```
 
+设置商户平台的密钥key（在微信后台配置）
+```
+WeChatPayUtil.setStoreKey(STORE_KEY);
+```
+
 要开始支付流程，首先需要已知一个商品的名称（productName）、价格（price）、内部订单号（orderNo），然后使用以下代码创建支付流程：
 ```
 WeChatPayUtil.doPay(this, price, orderNo, productName, new OnWXPayListener() {
