@@ -2,10 +2,10 @@
 Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享三个模块。
 
 <a href="https://github.com/kongzue/WechatHelper/">
-<img src="https://img.shields.io/badge/WechatHelper-1.1.1-green.svg" alt="Kongzue WechatHelper">
+<img src="https://img.shields.io/badge/WechatHelper-1.1.2-green.svg" alt="Kongzue WechatHelper">
 </a>
-<a href="https://bintray.com/myzchh/maven/WechatHelper/1.0.1/link">
-<img src="https://img.shields.io/badge/Maven-1.1.1-blue.svg" alt="Maven">
+<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.2/link">
+<img src="https://img.shields.io/badge/Maven-1.1.2-blue.svg" alt="Maven">
 </a>
 <a href="http://www.apache.org/licenses/LICENSE-2.0">
 <img src="https://img.shields.io/badge/License-Apache%202.0-red.svg" alt="License">
@@ -33,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.1'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.2'
 ```
 
 ## 开始使用
@@ -68,6 +68,15 @@ WeChatHelper.DEBUGMODE = true;
 ![add theme](https://github.com/kongzue/Res/raw/master/app/src/main/res/mipmap-xxxhdpi/wechathelper_add_theme.png)
 
 可前往<a href="https://github.com/kongzue/WechatHelper/blob/master/app/src/main/AndroidManifest.xml" target="_blank">直接复制</a>
+
+另外需要在 AndroidManifest.xml 中添加以下代码以便微信 SDK 通知注册：
+```
+<receiver android:name="com.kongzue.wechatsdkhelper.util.WXAppRegister">
+    <intent-filter>
+        <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+    </intent-filter>
+</receiver>
+```
 
 ### 使用微信登录
 
@@ -186,6 +195,9 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.2:
+- 增加 receiver；
+
 v1.1.1:
 - OnWXLoginListener 新增 returnCode(String code) 回调，方便自行处理 code 的情况。
 
