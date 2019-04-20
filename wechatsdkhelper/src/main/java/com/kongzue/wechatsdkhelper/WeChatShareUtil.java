@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.kongzue.wechatsdkhelper.interfaces.OnWXShareListener;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
@@ -157,7 +158,30 @@ public class WeChatShareUtil {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
     
-    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+    private static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+        byte[] data = bmpToByteArray(bmp, 100);
+        if (DEBUGMODE) Log.d(">>>", "zipBitmap: quality=100" + "   size=" + data.length);
+        int i = 100;
+        while (data.length > '耀') {             //请勿问我为啥用 '耀' 这个字，这问题问微信 SDK 开发者去，他就是这么判断的
+            if (1 > 10) {
+                i = i - 10;
+            } else {
+                i = i - 1;
+            }
+            if (i <= 0) {
+                if (DEBUGMODE)
+                    Log.e(">>>", "zipBitmap: 失败，很无奈清晰度已经降为0，但压缩的图像依然不符合微信的要求，最后size=" + data.length);
+                break;
+            }
+            data = bmpToByteArray(bmp, i);
+            if (DEBUGMODE) Log.d(">>>", "zipBitmap: quality=" + i + "   size=" + data.length);
+        }
+        if (needRecycle)
+            bmp.recycle();
+        return data;
+    }
+    
+    public static byte[] bmpToByteArray(final Bitmap bmp, int quality) {
         int i;
         int j;
         if (bmp.getHeight() > bmp.getWidth()) {
@@ -168,15 +192,13 @@ public class WeChatShareUtil {
             j = bmp.getHeight();
         }
         
-        Bitmap localBitmap = Bitmap.createBitmap(i, j, Bitmap.Config.ARGB_8888);
+        Bitmap localBitmap = Bitmap.createBitmap(i, j, Bitmap.Config.RGB_565);
         Canvas localCanvas = new Canvas(localBitmap);
         
         while (true) {
             localCanvas.drawBitmap(bmp, new Rect(0, 0, i, j), new Rect(0, 0, i, j), null);
-            if (needRecycle)
-                bmp.recycle();
             ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
-            localBitmap.compress(Bitmap.CompressFormat.JPEG, 70,
+            localBitmap.compress(Bitmap.CompressFormat.JPEG, quality,
                                  localByteArrayOutputStream
             );
             localBitmap.recycle();
@@ -185,7 +207,7 @@ public class WeChatShareUtil {
                 localByteArrayOutputStream.close();
                 return arrayOfByte;
             } catch (Exception e) {
-                if (DEBUGMODE) e.printStackTrace();
+                //F.out(e);
             }
             i = bmp.getHeight();
             j = bmp.getHeight();

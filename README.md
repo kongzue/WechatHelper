@@ -2,10 +2,10 @@
 Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享三个模块。
 
 <a href="https://github.com/kongzue/WechatHelper/">
-<img src="https://img.shields.io/badge/WechatHelper-1.1.2-green.svg" alt="Kongzue WechatHelper">
+<img src="https://img.shields.io/badge/WechatHelper-1.1.3-green.svg" alt="Kongzue WechatHelper">
 </a>
-<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.2/link">
-<img src="https://img.shields.io/badge/Maven-1.1.2-blue.svg" alt="Maven">
+<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.3/link">
+<img src="https://img.shields.io/badge/Maven-1.1.3-blue.svg" alt="Maven">
 </a>
 <a href="http://www.apache.org/licenses/LICENSE-2.0">
 <img src="https://img.shields.io/badge/License-Apache%202.0-red.svg" alt="License">
@@ -33,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.2'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.3'
 ```
 
 ## 开始使用
@@ -177,6 +177,24 @@ WeChatShareUtil.sharePictureToUser(Context context, Bitmap bitmap);
 WeChatShareUtil.sharePictureToCircle(Context context, Bitmap bitmap);
 ```
 
+从 1.1.3 版本起，新增图像递减压缩算法以适应微信SDK对分享图片32k字节（实际上是32768）的限制，如果您开启了 WeChatHelper.DEBUGMODE = true 会看到以下日志：
+
+此算法会对您传入的 bitmap 位图进行降低清晰度的不断压缩，直到其压缩到符合微信限制以内。
+```
+D/>>>: zipBitmap: quality=100   size=509930
+D/>>>: zipBitmap: quality=90   size=144679
+D/>>>: zipBitmap: quality=80   size=107233
+D/>>>: zipBitmap: quality=70   size=91980
+D/>>>: zipBitmap: quality=60   size=83841
+D/>>>: zipBitmap: quality=50   size=79622
+D/>>>: zipBitmap: quality=40   size=72253
+D/>>>: zipBitmap: quality=30   size=57459
+D/>>>: zipBitmap: quality=20   size=41839
+D/>>>: zipBitmap: quality=10   size=25331
+```
+
+之所以这么做，因为很多情况下您通过微信 SDK 直接分享图片到用户或朋友圈，会出现没反应的情况，如果此时您查看日志可能遇到 “checkArgs fail, thumbData is invalid” 的微信错误提示，此算法为解决该问题而设计。
+
 ## 开源协议
 ```
 Copyright Kongzue WechatHelper
@@ -195,6 +213,9 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.3:
+- 新增图像递减压缩算法以适应微信SDK对分享图片32k字节（实际上是32768）的限制；
+
 v1.1.2:
 - 增加 receiver；
 
