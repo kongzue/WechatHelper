@@ -2,10 +2,10 @@
 Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享三个模块。
 
 <a href="https://github.com/kongzue/WechatHelper/">
-<img src="https://img.shields.io/badge/WechatHelper-1.1.3-green.svg" alt="Kongzue WechatHelper">
+<img src="https://img.shields.io/badge/WechatHelper-1.1.3.1-green.svg" alt="Kongzue WechatHelper">
 </a>
-<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.3/link">
-<img src="https://img.shields.io/badge/Maven-1.1.3-blue.svg" alt="Maven">
+<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.3.1/link">
+<img src="https://img.shields.io/badge/Maven-1.1.3.1-blue.svg" alt="Maven">
 </a>
 <a href="http://www.apache.org/licenses/LICENSE-2.0">
 <img src="https://img.shields.io/badge/License-Apache%202.0-red.svg" alt="License">
@@ -33,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.1.3</version>
+  <version>1.1.3.1</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.3'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.3.1'
 ```
 
 ## 开始使用
@@ -213,6 +213,9 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.3.1:
+- 因气急按错键盘，1.1.3 的判断写错了一个字，修复此 bug；
+
 v1.1.3:
 - 新增图像递减压缩算法以适应微信SDK对分享图片32k字节（实际上是32768）的限制；
 

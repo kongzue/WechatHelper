@@ -163,7 +163,7 @@ public class WeChatShareUtil {
         if (DEBUGMODE) Log.d(">>>", "zipBitmap: quality=100" + "   size=" + data.length);
         int i = 100;
         while (data.length > '耀') {             //请勿问我为啥用 '耀' 这个字，这问题问微信 SDK 开发者去，他就是这么判断的
-            if (1 > 10) {
+            if (i > 10) {
                 i = i - 10;
             } else {
                 i = i - 1;
