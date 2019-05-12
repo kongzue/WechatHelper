@@ -112,6 +112,7 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         finish();
+                        WeChatLoginUtil.getOnWXLoginListener().onError(ERROR_LOGIN);
                     }
                 });
                 builder.show();

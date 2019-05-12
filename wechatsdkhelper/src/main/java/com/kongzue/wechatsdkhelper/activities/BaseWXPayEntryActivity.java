@@ -69,6 +69,7 @@ public class BaseWXPayEntryActivity extends AppCompatActivity implements IWXAPIE
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     finish();
+                    WeChatPayUtil.getOnWXPayListener().onError(errorCode);
                 }
             });
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {

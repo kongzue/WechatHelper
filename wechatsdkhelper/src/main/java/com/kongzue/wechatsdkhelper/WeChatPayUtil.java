@@ -58,7 +58,8 @@ public class WeChatPayUtil {
     public static void doPay(Activity context, String price, String orderNo, String productName, OnWXPayListener listener) {
         synchronized (WeChatPayUtil.class) {
             if (!isInstallWechat(context)){
-                onWXPayListener.onError(ERROR_NOT_INSTALL_WECHAT);
+                listener.onError(ERROR_NOT_INSTALL_WECHAT);
+                return;
             }
             if (weChatPayUtil == null) {
                 weChatPayUtil = new WeChatPayUtil();
