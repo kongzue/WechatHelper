@@ -6,7 +6,7 @@ def siteUrl = 'https://github.com/kongzue/WechatHelper' //项目在github主页�
 def gitUrl = 'https://github.com/kongzue/WechatHelper.git'   //Git仓库的地址
 
 group = "com.kongzue.wechathelper"//发布aar前缀根节点
-version = "1.1.4"//发布aar的库版本
+version = "1.1.5"//发布aar的库版本
 
 android {
     compileSdkVersion 28
@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 6
-        versionName "1.1.4"
+        versionCode 7
+        versionName "1.1.5"
 
     }
 
@@ -86,5 +86,5 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.0.5+'
+    implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.1.4+'
 }

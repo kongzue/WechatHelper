@@ -2,10 +2,10 @@
 Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享三个模块。
 
 <a href="https://github.com/kongzue/WechatHelper/">
-<img src="https://img.shields.io/badge/WechatHelper-1.1.4-green.svg" alt="Kongzue WechatHelper">
+<img src="https://img.shields.io/badge/WechatHelper-1.1.5-green.svg" alt="Kongzue WechatHelper">
 </a>
-<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.4/link">
-<img src="https://img.shields.io/badge/Maven-1.1.4-blue.svg" alt="Maven">
+<a href="https://bintray.com/myzchh/maven/WechatHelper/1.1.5/link">
+<img src="https://img.shields.io/badge/Maven-1.1.5-blue.svg" alt="Maven">
 </a>
 <a href="http://www.apache.org/licenses/LICENSE-2.0">
 <img src="https://img.shields.io/badge/License-Apache%202.0-red.svg" alt="License">
@@ -20,9 +20,9 @@ Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享
 ```
 implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 ```
-- 本组件支付模块需要使用网络请求框架与微信接口进行数据交互，因此需要引入 BaseOkHttpV3 组件库，请保证使用 3.0.5 以上版本：
+- 本组件支付模块需要使用网络请求框架与微信接口进行数据交互，因此需要引入 BaseOkHttpV3 组件库，请保证使用 3.1.4 以上版本：
 ```
-implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.0.8'
+implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.1.5'
 ```
 
 ### 引入
@@ -33,14 +33,14 @@ Maven仓库：
 <dependency>
   <groupId>com.kongzue.wechathelper</groupId>
   <artifactId>wechatsdkhelper</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle：
 在dependencies{}中添加引用：
 ```
-implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.4'
+implementation 'com.kongzue.wechathelper:wechatsdkhelper:1.1.5'
 ```
 
 ## 开始使用
@@ -115,6 +115,10 @@ WeChatLoginUtil.doLogin(this, new OnWXLoginListener() {
 
 ### 使用微信支付
 
+#### 使用纯客户端完成所有支付逻辑
+
+此逻辑环境下，由客户端完成所有支付过程，服务端可通过后续微信服务通过接口回调数据判断支付信息是否合法。
+
 要使用支付功能首先需要商户号（MCH_ID），服务端的回调接口地址（NOTIFY_URL），已经具备二者可以通过以下代码初始化微信支付：
 ```
 WeChatPayUtil.initPay(MCH_ID,NOTIFY_URL);
@@ -128,6 +132,32 @@ WeChatPayUtil.setStoreKey(STORE_KEY);
 要开始支付流程，首先需要已知一个商品的名称（productName）、价格（price）、内部订单号（orderNo），然后使用以下代码创建支付流程：
 ```
 WeChatPayUtil.doPay(this, price, orderNo, productName, new OnWXPayListener() {
+    @Override
+    public void onSuccess(String orderNo) {
+        //支付成功，返回内部订单号做校验，校验流程需要发送给服务端检查订单是否已被支付
+    }
+    @Override
+    public void onCancel() {
+        //支付被取消
+    }
+    @Override
+    public void onError(int errorStatus) {
+        //支付错误，错误码可能为：
+        //WeChatHelper.ERROR_NOT_INSTALL_WECHAT = -1;       //未安装微信
+        //请根据微信返回错误码排查错误原因：https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5
+    }
+});
+```
+
+#### 使用半服务端半客户端完成支付逻辑
+
+此逻辑环境下，由服务端完成前半段支付参数信息申请后交给客户端完成调起支付流程。
+
+客户端需要以下参数可启动支付流程：价格（price）、订单号（orderNo）、商品名（productName）、凭证（prepayId、nonceStr）、时间戳（timeStamp）、签名（sign）
+
+使用以下接口发起支付流程：
+```
+WeChatPayUtil.doPay(this, price, orderNo, productName, prepayId, nonceStr, timeStamp, sign, new OnWXPayListener() {
     @Override
     public void onSuccess(String orderNo) {
         //支付成功，返回内部订单号做校验，校验流程需要发送给服务端检查订单是否已被支付
@@ -237,6 +267,10 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.5:
+- 升级至最新 BaseOkHttpV3 支持；
+- 支持自定义支付逻辑（由服务端负责请求参数后仅使用客户端完成支付流程）；
+
 v1.1.4:
 - 修复支付回调的空指针异常 bug；
 

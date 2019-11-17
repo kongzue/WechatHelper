@@ -14,6 +14,7 @@ import com.kongzue.wechatsdkhelper.util.MD5;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
 import static com.kongzue.wechatsdkhelper.WeChatHelper.*;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -33,6 +34,13 @@ import java.util.TreeMap;
 
 public class WeChatPayUtil {
     private static OnWXPayListener onWXPayListener;                                             //回调
+    
+    //定制逻辑 Custom
+    private static String customRandomKey;         //随机数
+    private static String customIpAddress;         //创建IP地址
+    private static String customTradeType;         //交易类型
+    private String timeStamp;                      //时间戳
+    private String customSign;                     //自定义签名
     
     private static String MCH_ID = "";                                                          //微信支付分配的商户号
     private static String NOTIFY_URL;                                                           //接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。
@@ -57,7 +65,38 @@ public class WeChatPayUtil {
     
     public static void doPay(Activity context, String price, String orderNo, String productName, OnWXPayListener listener) {
         synchronized (WeChatPayUtil.class) {
-            if (!isInstallWechat(context)){
+            if (!isInstallWechat(context)) {
+                listener.onError(ERROR_NOT_INSTALL_WECHAT);
+                return;
+            }
+            if (weChatPayUtil == null) {
+                weChatPayUtil = new WeChatPayUtil();
+            }
+            weChatPayUtil.customSign= null;
+            weChatPayUtil.orderNo = orderNo;
+            weChatPayUtil.price = price;
+            weChatPayUtil.productName = productName;
+            weChatPayUtil.context = context;
+            weChatPayUtil.api = WXAPIFactory.createWXAPI(context, APP_ID);
+            weChatPayUtil.api.registerApp(APP_ID);
+            onWXPayListener = listener;
+            weChatPayUtil.takeOrder();
+        }
+    }
+    
+    //自定义支付逻辑
+    public static void doPay(Activity context,
+                             String price,
+                             String orderNo,
+                             String productName,
+                             String prepayId,
+                             String nonceStr,
+                             String timeStamp,
+                             String sign,
+                             OnWXPayListener listener) {
+        
+        synchronized (WeChatPayUtil.class) {
+            if (!isInstallWechat(context)) {
                 listener.onError(ERROR_NOT_INSTALL_WECHAT);
                 return;
             }
@@ -67,11 +106,16 @@ public class WeChatPayUtil {
             weChatPayUtil.orderNo = orderNo;
             weChatPayUtil.price = price;
             weChatPayUtil.productName = productName;
+            weChatPayUtil.prepay_id = prepayId;
+            weChatPayUtil.nonce_str = nonceStr;
+            weChatPayUtil.customSign = sign;
+            weChatPayUtil.timeStamp = timeStamp;
             weChatPayUtil.context = context;
             weChatPayUtil.api = WXAPIFactory.createWXAPI(context, APP_ID);
             weChatPayUtil.api.registerApp(APP_ID);
             onWXPayListener = listener;
-            weChatPayUtil.takeOrder();
+            
+            weChatPayUtil.startPay();
         }
     }
     
@@ -137,7 +181,6 @@ public class WeChatPayUtil {
     //用来接收服务器返回的prepay_id参数
     String prepay_id = "";
     String nonce_str = "";
-    //我到现在都不明白服务器返回给我这个值有毛用
     String sign = "";
     
     private void startPay() {
@@ -158,7 +201,7 @@ public class WeChatPayUtil {
             parameters.put("partnerid", MCH_ID);
             parameters.put("prepayid", prepay_id);
             parameters.put("noncestr", nonce_str);
-            parameters.put("timestamp", time);
+            parameters.put("timestamp", timeStamp == null ? time : timeStamp);
             parameters.put("package", "Sign=WXPay");
             
             PayReq req = new PayReq();
@@ -168,10 +211,8 @@ public class WeChatPayUtil {
             req.nonceStr = nonce_str;
             req.timeStamp = time;
             req.packageValue = "Sign=WXPay";
-            req.sign = createSign(parameters);
+            req.sign = customSign == null ? createSign(parameters) : customSign;
             
-            //toast("开始支付");
-            // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
             api.sendReq(req);
             log("结束支付流程————————————————————————————");
         } catch (Exception e) {
@@ -217,7 +258,7 @@ public class WeChatPayUtil {
         unifiedorder.setAppid(APP_ID);
         unifiedorder.setMch_id(MCH_ID);
         //上面提到的获取随机数的方法
-        final String nonce_str = getRandomStringByLength(30);
+        final String nonce_str = customRandomKey == null ? getRandomStringByLength(30) : customRandomKey;
         unifiedorder.setNonce_str(nonce_str);
         unifiedorder.setBody(productName);
         //order_id就是订单号
@@ -225,10 +266,10 @@ public class WeChatPayUtil {
         //总金额
         unifiedorder.setTotal_fee(price);
         //ip地址
-        unifiedorder.setSpbill_create_ip("127.0.0.1");
+        unifiedorder.setSpbill_create_ip(customIpAddress == null ? "127.0.0.1" : customIpAddress);
         //支付成功的回调地址
         unifiedorder.setNotify_url(NOTIFY_URL);
-        unifiedorder.setTrade_type("APP");
+        unifiedorder.setTrade_type(customTradeType == null ? "APP" : customTradeType);
         
         final SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
         parameters.put("appid", APP_ID);
@@ -237,9 +278,9 @@ public class WeChatPayUtil {
         parameters.put("body", productName);
         parameters.put("out_trade_no", orderNo);
         parameters.put("total_fee", price);
-        parameters.put("spbill_create_ip", "127.0.0.1");
+        parameters.put("spbill_create_ip", customIpAddress == null ? "127.0.0.1" : customIpAddress);
         parameters.put("notify_url", NOTIFY_URL);
-        parameters.put("trade_type", "APP");
+        parameters.put("trade_type", customTradeType == null ? "APP" : customTradeType);
         
         unifiedorder.setSign(createSign(parameters));
         return unifiedorder;
@@ -465,5 +506,29 @@ public class WeChatPayUtil {
     
     public static void setNotifyUrl(String notifyUrl) {
         NOTIFY_URL = notifyUrl;
+    }
+    
+    public static String getCustomRandomKey() {
+        return customRandomKey;
+    }
+    
+    public static void setCustomRandomKey(String s) {
+        customRandomKey = s;
+    }
+    
+    public static String getCustomIpAddress() {
+        return customIpAddress;
+    }
+    
+    public static void setCustomIpAddress(String s) {
+        customIpAddress = s;
+    }
+    
+    public static String getCustomTradeType() {
+        return customTradeType;
+    }
+    
+    public static void setCustomTradeType(String s) {
+        customTradeType = s;
     }
 }
