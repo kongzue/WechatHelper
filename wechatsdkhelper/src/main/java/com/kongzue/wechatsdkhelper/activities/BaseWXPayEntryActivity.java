@@ -16,6 +16,7 @@ import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
 import static com.kongzue.wechatsdkhelper.WeChatHelper.*;
 
 /**
@@ -54,31 +55,20 @@ public class BaseWXPayEntryActivity extends AppCompatActivity implements IWXAPIE
     
     @Override
     public void onResp(final BaseResp resp) {
+        WeChatPayUtil.setLastResp(resp);
         isReturnCode = true;
         this.errorCode = resp.errCode;
         if (DEBUGMODE) {
             log("onPayFinish, errCode = " + errorCode + "  getType = " + resp.getType());
         }
-    
-        if (resp.errCode==-1){
-            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(me);
-            builder.setTitle("提示");
-            builder.setCancelable(true);
-            builder.setMessage("微信支付异常，请稍候重试");
-            builder.setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+        
+        if (resp.errCode == -1) {
+            finishRunnable = new Runnable() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
+                public void run() {
                     WeChatPayUtil.getOnWXPayListener().onError(errorCode);
                 }
-            });
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    finish();
-                }
-            });
-            builder.show();
+            };
             return;
         }
         
@@ -88,37 +78,54 @@ public class BaseWXPayEntryActivity extends AppCompatActivity implements IWXAPIE
         }
     }
     
+    private Runnable finishRunnable;
+    
     private void doFinish(int code) {
         if (DEBUGMODE) log("doFinish.code: " + code);
         switch (code) {
             case 0:
-                if (WeChatPayUtil.getOnWXPayListener() != null) {
-                    if (DEBUGMODE)
-                        Log.i(">>>", "OnWXPayListener: onSuccess");
-                    WeChatPayUtil.getOnWXPayListener().onSuccess(
-                            WeChatPayUtil.getOrderNo()
-                    );
-                }
+                if (DEBUGMODE)
+                    Log.i(">>>", "OnWXPayListener: onSuccess");
+                finishRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WeChatPayUtil.getOnWXPayListener().onSuccess(
+                                WeChatPayUtil.getOrderNo()
+                        );
+                    }
+                };
                 finish();
                 break;
             case -1:
                 //可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
                 loge("支付失败");
                 if (DEBUGMODE) Log.i(">>>", "OnWXPayListener: onError");
-                if (WeChatPayUtil.getOnWXPayListener() != null) {
-                    WeChatPayUtil.getOnWXPayListener().onError(errorCode);
-                }
+                finishRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WeChatPayUtil.getOnWXPayListener().onError(errorCode);
+                    }
+                };
                 finish();
                 break;
             case -2:
                 //用户取消
                 if (DEBUGMODE) Log.i(">>>", "OnWXPayListener: onCancel");
-                if (WeChatPayUtil.getOnWXPayListener() != null) {
-                    WeChatPayUtil.getOnWXPayListener().onCancel();
-                }
+                finishRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WeChatPayUtil.getOnWXPayListener().onCancel();
+                    }
+                };
                 finish();
                 break;
             default:
+                finishRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WeChatPayUtil.getOnWXPayListener().onError(errorCode);
+                    }
+                };
                 finish();
                 break;
         }
@@ -164,10 +171,26 @@ public class BaseWXPayEntryActivity extends AppCompatActivity implements IWXAPIE
             @Override
             public void run() {
                 Log.i(">>>", "run: isReturnCode=" + isReturnCode);
+                finishRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        WeChatPayUtil.getOnWXPayListener().onError(errorCode);
+                    }
+                };
                 if (!isReturnCode) {
                     finish();
                 }
             }
         }, 1000);
+    }
+    
+    @Override
+    protected void onDestroy() {
+        if (WeChatPayUtil.getInstance() != null) {
+            if (WeChatPayUtil.getInstance().getContext() != null && finishRunnable != null) {
+                WeChatPayUtil.getInstance().getContext().runOnUiThread(finishRunnable);
+            }
+        }
+        super.onDestroy();
     }
 }

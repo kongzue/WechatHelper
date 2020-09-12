@@ -267,6 +267,9 @@ limitations under the License.
 ```
 
 ## 更新日志
+v1.1.5.1(Beta):
+- 更新了支付回调逻辑，在启动支付的 Activity 主线程进行回调；
+
 v1.1.5:
 - 升级至最新 BaseOkHttpV3 支持；
 - 支持自定义支付逻辑（由服务端负责请求参数后仅使用客户端完成支付流程）；

@@ -11,6 +11,7 @@ import com.kongzue.baseokhttp.HttpRequest;
 import com.kongzue.baseokhttp.listener.ResponseListener;
 import com.kongzue.wechatsdkhelper.interfaces.OnWXPayListener;
 import com.kongzue.wechatsdkhelper.util.MD5;
+import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -33,7 +34,9 @@ import java.util.TreeMap;
  */
 
 public class WeChatPayUtil {
+    
     private static OnWXPayListener onWXPayListener;                                             //回调
+    private static BaseResp lastResp;
     
     //定制逻辑 Custom
     private static String customRandomKey;         //随机数
@@ -72,7 +75,7 @@ public class WeChatPayUtil {
             if (weChatPayUtil == null) {
                 weChatPayUtil = new WeChatPayUtil();
             }
-            weChatPayUtil.customSign= null;
+            weChatPayUtil.customSign = null;
             weChatPayUtil.orderNo = orderNo;
             weChatPayUtil.price = price;
             weChatPayUtil.productName = productName;
@@ -460,6 +463,22 @@ public class WeChatPayUtil {
     }
     
     public static OnWXPayListener getOnWXPayListener() {
+        if (onWXPayListener == null) onWXPayListener = new OnWXPayListener() {
+            @Override
+            public void onSuccess(String orderNo) {
+            
+            }
+            
+            @Override
+            public void onCancel() {
+            
+            }
+            
+            @Override
+            public void onError(int errorStatus) {
+            
+            }
+        };
         return onWXPayListener;
     }
     
@@ -530,5 +549,21 @@ public class WeChatPayUtil {
     
     public static void setCustomTradeType(String s) {
         customTradeType = s;
+    }
+    
+    public static BaseResp getLastResp() {
+        return lastResp;
+    }
+    
+    public static void setLastResp(BaseResp lastResp) {
+        WeChatPayUtil.lastResp = lastResp;
+    }
+    
+    public Activity getContext() {
+        return context;
+    }
+    
+    public static WeChatPayUtil getInstance(){
+        return weChatPayUtil;
     }
 }
