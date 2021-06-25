@@ -1,21 +1,19 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 
 def siteUrl = 'https://github.com/kongzue/WechatHelper' //项目在github主页地址
 def gitUrl = 'https://github.com/kongzue/WechatHelper.git'   //Git仓库的地址
 
 group = "com.kongzue.wechathelper"//发布aar前缀根节点
-version = "1.1.5.1"//发布aar的库版本
+version = "1.1.6"//发布aar的库版本
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 7
-        versionName "1.1.5.1"
+        versionName "1.1.6"
 
     }
 
@@ -27,64 +25,11 @@ android {
     }
 
 }
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                name 'WechatHelper'//添加项目描述
-                url siteUrl
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'myzchh'//设置自己ID
-                        name 'myzchh'//设置自己名字
-                        email 'myzcxhh@live.cn'//设置自己邮箱
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-            }
-        }
-    }
-}
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "WechatHelper" //项目在JCenter的名字
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-    }
-}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0+'
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.1.4+'
+    implementation 'com.github.kongzue:BaseOkHttpV3:3.2.3.beta5+'
+    implementation "com.squareup.okhttp3:okhttp:4.9.1+"
 }

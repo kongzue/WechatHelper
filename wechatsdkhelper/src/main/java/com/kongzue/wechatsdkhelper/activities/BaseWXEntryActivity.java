@@ -1,10 +1,9 @@
 package com.kongzue.wechatsdkhelper.activities;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.kongzue.baseokhttp.HttpRequest;
@@ -98,7 +97,7 @@ public class BaseWXEntryActivity extends AppCompatActivity implements IWXAPIEven
                 break;
             
             case BaseResp.ErrCode.ERR_BAN:
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
                 builder.setTitle("提示");
                 builder.setCancelable(true);
                 builder.setMessage("微信登录异常，请稍候重试");

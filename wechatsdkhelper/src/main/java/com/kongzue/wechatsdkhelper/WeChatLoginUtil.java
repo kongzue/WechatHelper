@@ -30,26 +30,26 @@ public class WeChatLoginUtil {
     private static OnWXLoginListener onWXLoginListener;
     
     public static void doLogin(Activity me, OnWXLoginListener onWXLoginListener) {
-        if (WeChatPayUtil.isInstallWechat(me)) {
+        try{
             WeChatLoginUtil.onWXLoginListener = onWXLoginListener;
             IWXAPI api = WXAPIFactory.createWXAPI(me, APP_ID);
             api.handleIntent(me.getIntent(), new IWXAPIEventHandler() {
                 @Override
                 public void onReq(BaseReq baseReq) {
-                
+            
                 }
-                
+        
                 @Override
                 public void onResp(BaseResp baseResp) {
-                
+            
                 }
             });
-            
+    
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = getAndroidId(me);
             api.sendReq(req);
-        } else {
+        }catch (Exception e){
             onWXLoginListener.onError(ERROR_NOT_INSTALL_WECHAT);
         }
     }

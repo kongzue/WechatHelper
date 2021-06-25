@@ -1,12 +1,10 @@
 package com.kongzue.wechathelper;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.kongzue.wechatsdkhelper.WeChatLoginUtil;
-import com.kongzue.wechatsdkhelper.WeChatPayUtil;
 import com.kongzue.wechatsdkhelper.interfaces.OnWXLoginListener;
-import com.kongzue.wechatsdkhelper.interfaces.OnWXPayListener;
 
 import java.util.Map;
 
