@@ -14,8 +14,37 @@ Kongzue WechatHelper 是微信 SDK 辅助组件，提供登录、支付和分享
 <img src="https://img.shields.io/badge/Homepage-Kongzue.com-brightgreen.svg" alt="Homepage">
 </a>
 
+## 引入
 
-### 提示
+警告 jCenter 已经停止运行，请使用 jitpack 引入本库：
+
+### jitpack 仓库
+
+- 本组件是微信 SDK 辅助组件，因此需要额外引入微信 SDK 库：
+```
+implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.7.4'
+```
+- 本组件支付模块需要使用网络请求框架与微信接口进行数据交互，因此需要引入 BaseOkHttpV3 组件库，请保证使用 3.1.4 以上版本：
+```
+implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.1.5'
+```
+进入 build.gradle(project)，添加 jitpack Maven 库支持：
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+然后进入 build.gradle(app) 添加引入：
+```
+implementation 'com.github.kongzue:WechatHelper:1.1.6.1'
+```
+
+### jCenter 仓库（废弃）
+
 - 本组件是微信 SDK 辅助组件，因此需要额外引入微信 SDK 库：
 ```
 implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
@@ -24,8 +53,6 @@ implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 ```
 implementation 'com.kongzue.baseokhttp_v3:baseokhttp_v3:3.1.5'
 ```
-
-### 引入
 
 1) 从 Maven 仓库或 jCenter 引入：
 Maven仓库：
